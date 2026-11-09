@@ -4619,6 +4619,9 @@ class ModelDriver:
         _mi = getattr(self.config, "land_canopy_most_n_iters", None)
         if _mi is not None:
             _w_over["most_n_iters"] = int(_mi)
+        _sg = getattr(self.config, "land_canopy_solve_group", None)
+        if _sg is not None:
+            _w_over["solve_group"] = int(_sg)
         if _w_over:
             from legoesm.land.canopy.config import CanopyConfig as _CanopyCfg
             if not isinstance(cfg.surface_scheme, _CanopyCfg):
@@ -4629,10 +4632,11 @@ class ModelDriver:
                 surface_scheme=cfg.surface_scheme._replace(**_w_over).validate())
         if isinstance(cfg.surface_scheme, TwoLeafCanopyConfig):
             logger.info("  land canopy smoothing widths: RH cap %.3g, zeta cap %.3g; "
-                        "MOST iterations %d",
+                        "MOST iterations %d; solve group %d (0 = one batch)",
                         cfg.surface_scheme.rh_cap_smoothing_width,
                         cfg.surface_scheme.zeta_cap_smoothing_width,
-                        cfg.surface_scheme.most_n_iters)
+                        cfg.surface_scheme.most_n_iters,
+                        cfg.surface_scheme.solve_group)
         # One-layer snow thermal node, same placement and reason.
         _sn = bool(self.config.land_snow_insulation)
         cfg = cfg._replace(thermal=cfg.thermal._replace(snow_insulation=_sn))
